@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+    id("com.google.devtools.ksp")
 }
 android {
     namespace = "com.example.nytviewer"
@@ -64,6 +65,10 @@ dependencies {
     implementation(libs.androidx.navigation.common.ktx)
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
+    implementation("com.google.dagger:hilt-android:2.48.1")
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+
+    ksp("com.google.dagger:hilt-android-compiler:2.48.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
