@@ -8,4 +8,4 @@ sealed class ActionResult<State> {
     data class Failure<State>(val error: String) : ActionResult<State>()
 }
 
-abstract class BaseViewModel<Action, State>(state: State) : StateReducer<Action, State>, ViewModel()
+abstract class BaseViewModel<Action, State>() : StateReducer<Action, State>, ViewModel()

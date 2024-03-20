@@ -2,6 +2,7 @@ package com.example.nytviewer.services.transport.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import java.util.Date
 
 @JsonClass(generateAdapter = true)
 data class Article(
@@ -10,6 +11,9 @@ data class Article(
 
     @Json(name = "uri")
     var uri: String = "",
+
+    @Json(name = "published_date")
+    var publishedDate: Date = Date(),
 
     @Json(name = "subsection")
     var subsection: String = "",

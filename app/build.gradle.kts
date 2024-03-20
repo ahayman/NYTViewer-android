@@ -63,11 +63,13 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material)
 
-    implementation("com.kiwi.navigation-compose.typed:core:0.10.0")
-    implementation(libs.kotlinx.serialization.core)
     implementation(libs.androidx.navigation.common.ktx)
+    implementation("com.kiwi.navigation-compose.typed:core:0.10.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation(libs.kotlinx.serialization.core)
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
     implementation("com.google.dagger:hilt-android:2.51")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")

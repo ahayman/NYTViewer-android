@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
@@ -16,6 +15,7 @@ import com.example.nytviewer.navigation.NavDestination
 import com.example.nytviewer.navigation.NavGraphInterface
 import com.example.nytviewer.navigation.Navigator
 import com.example.nytviewer.navigation.PopBehavior
+import com.example.nytviewer.ui.articleList.ArticleListView
 import com.example.nytviewer.ui.common.NavBar
 import com.example.nytviewer.utils.asLifecycleAwareState
 import com.kiwi.navigationcompose.typed.composable
@@ -89,7 +89,7 @@ fun AppNavHost(
     NavHost(navController = navController, startDestination = createRoutePattern<NavDestination.ArticleList>()) {
         composable<NavDestination.ArticleList> {
             NavBar(title = "ArticleList") {
-
+                ArticleListView()
             }
         }
         composable<NavDestination.ArticleDetail> {

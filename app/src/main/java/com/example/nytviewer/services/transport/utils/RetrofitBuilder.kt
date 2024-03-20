@@ -37,7 +37,7 @@ class RetrofitBuilder(private val provider: TransportKeysProvider, private val m
         }
 
         val networkInterceptor = Interceptor { chain ->
-            val request = chain.request();
+            val request = chain.request()
             val url = request.url.newBuilder().addQueryParameter("api-key", provider.apiKey).build()
             val requestBuilder: Request.Builder = request.newBuilder().url(url)
             requestBuilder.header("Application", "application/json")
@@ -46,7 +46,7 @@ class RetrofitBuilder(private val provider: TransportKeysProvider, private val m
         }
         clientBuilder.addInterceptor(networkInterceptor)
         return Retrofit.Builder()
-            .baseUrl("https://api.nytimes.com/svc")
+            .baseUrl(provider.baseUrl)
             .client(clientBuilder.build())
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

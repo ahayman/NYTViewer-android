@@ -36,6 +36,7 @@ class AppModule {
     @Singleton
     fun provideTransportKeysProvider() = object : TransportKeysProvider {
         override val apiKey: String = "3L0gAAnMGB3TtBTiYltEzaWVZK1mMKmA"
+        override val baseUrl: String = "https://api.nytimes.com/svc/"
     }
 
     @Provides

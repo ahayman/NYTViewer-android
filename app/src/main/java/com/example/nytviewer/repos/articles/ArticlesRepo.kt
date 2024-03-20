@@ -18,23 +18,20 @@ import kotlinx.coroutines.launch
 import java.net.URL
 import javax.inject.Inject
 
-private fun smallImageIn(article: Article): URL? {
-    val urlString = article.media?.first { it.type == "image" }?.let { media ->
+private fun smallImageIn(article: Article): String? =
+    article.media?.firstOrNull { it.type == "image" }?.let { media ->
         media.metadata.minByOrNull { it.height * it.width }?.url
     } ?: article.multiMedia?.filter { it.type == "image" }?.minByOrNull { it.width * it.height }?.url
-    return urlString?.let { URL(it) }
-}
 
-private fun largeImageIn(article: Article): URL? {
-    val urlString = article.media?.first { it.type == "image" }?.let { media ->
+private fun largeImageIn(article: Article): String? =
+    article.media?.firstOrNull { it.type == "image" }?.let { media ->
         media.metadata.maxByOrNull { it.height * it.width }?.url
     } ?: article.multiMedia?.filter { it.type == "image" }?.maxByOrNull { it.width * it.height }?.url
-    return urlString?.let { URL(it) }
-}
 
 fun List<Article>.briefs(): List<ArticleBrief> = this.map {
     ArticleBrief(
         uri = it.uri,
+        date = it.publishedDate,
         title = it.title,
         byline = it.byline,
         imageUrl = smallImageIn(it)
@@ -82,6 +79,7 @@ class ArticlesRepo @Inject constructor(
             ArticleDetail(
                 uri = it.uri,
                 url = URL(it.url),
+                date = it.publishedDate,
                 title = it.title,
                 byline = it.byline,
                 abstract = it.abstract,
