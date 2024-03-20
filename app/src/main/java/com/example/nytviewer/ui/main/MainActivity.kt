@@ -12,19 +12,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.nytviewer.navigation.NavGraphInterface
 import com.example.nytviewer.navigation.Navigator
+import com.example.nytviewer.ui.theme.MutableThemeProvider
 import com.example.nytviewer.ui.theme.NYTViewerTheme
+import com.example.nytviewer.ui.theme.ThemeProviders
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @Inject
     lateinit var navigator: Navigator
     @Inject
     lateinit var navGraph: NavGraphInterface
+    @Inject
+    lateinit var themeProvider: MutableThemeProvider
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            NYTViewerTheme {
+            NYTViewerTheme(provider = themeProvider) {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -48,7 +54,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    NYTViewerTheme {
+    NYTViewerTheme(provider = ThemeProviders.darkProvider) {
         Greeting("Android")
     }
 }

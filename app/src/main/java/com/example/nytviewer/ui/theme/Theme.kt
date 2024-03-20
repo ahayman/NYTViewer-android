@@ -1,70 +1,130 @@
 package com.example.nytviewer.ui.theme
 
 import android.app.Activity
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.example.nytviewer.ui.common.CustomRippleTheme
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
-)
+/**
+ * Protocol for the ThemeProvider. It must provide a StateFlow object
+ * for each of the main theme components (ex: colors, font). Updates are
+ * then collected in MaterialTheme Composable for display.
+ *
+ * StateFlow is used to update the colors/font in real time.
+ */
+interface ThemeProvider {
+    val colors: StateFlow<ColorTheme>
+    val font: StateFlow<FontDef>
+}
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+/**
+ * Interface extends the ThemeProvider to allow updating thematic items.
+ * This is purely a convenience interface, and is not required for the Theme system
+ * to work. The Theme system only requires a ThemeProvider.
+ */
+interface MutableThemeProvider : ThemeProvider {
+    fun setColors(colors: ColorTheme)
+    fun setFont(font: FontDef)
+}
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
-)
+/**
+ * ThemeProviders are small, concrete objects that act as a ThemeProvider in limited situations.
+ * They're intended to be used in situations like Testing and Previews, where we need to easily
+ * construct a Provider without having to instantiate a class.
+ */
+object ThemeProviders {
+    /**
+     * A Static Provider is a non-editable provider with reasonable defaults.
+     */
+    private fun staticProvider(
+        colors: ColorTheme = ColorTheme.System,
+        font: FontDef = FontDef.System
+    ): ThemeProvider {
+        return object : ThemeProvider {
+            override val colors = MutableStateFlow(colors)
+            override val font = MutableStateFlow(font)
+        }
+    }
 
+    /**
+     * Static light & dark providers.
+     * Used primarily in Previews.
+     */
+    var darkProvider = staticProvider(ColorTheme.Dark)
+    var lightProvider = staticProvider(ColorTheme.Light)
+
+    /**
+     * The inMemory provider provides an editable provider that will not
+     * persist it's state in any form. Any edits or changes to the provider will be lost
+     * when the app is removed from memory.
+     */
+    fun inMemoryProvider(
+        colors: ColorTheme = ColorTheme.System,
+        font: FontDef = FontDef.System
+    ): MutableThemeProvider {
+        return object : MutableThemeProvider {
+            override val colors = MutableStateFlow(colors)
+            override val font = MutableStateFlow(font)
+
+            override fun setColors(colors: ColorTheme) {
+                this.colors.value = colors
+            }
+
+            override fun setFont(font: FontDef) {
+                this.font.value = font
+            }
+        }
+    }
+}
+
+/**
+ * The Primary Theme provider. This Composable should wrap around any/all Composables
+ * that need access to a theme. Normally, this would be done in `MainActivity` under
+ * `setContent`.
+ *
+ * Requires a `provider: ThemeProvider` which determines the theme being used. Updates/changes
+ * to the Theme should occur through the ThemeProvider.
+ *
+ * Requires `content`, which is the Composable that is being wrapped.
+ */
 @Composable
 fun NYTViewerTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    provider: ThemeProvider,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+    val colorTheme by provider.colors.collectAsState()
+    val colors = colorTheme.colors()
+    val font by provider.font.collectAsState()
     val view = LocalView.current
+    val isDark = colorTheme.isDarkTheme()
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            window.statusBarColor = colors.primary.toArgb()
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = isDark
         }
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    CompositionLocalProvider(
+        LocalRippleTheme provides CustomRippleTheme(
+            MaterialTheme.colorScheme.inversePrimary,
+            colorTheme.isDarkTheme()
+        )
+    ) {
+        MaterialTheme(
+            colorScheme = colors,
+            typography = font.typography,
+            content = content
+        )
+    }
 }

@@ -22,6 +22,9 @@ class NavGraph : NavGraphInterface {
     ): DestinationInfo = when (navAction) {
         NavAction.OnBack -> DestinationInfo(NavDestination.Back)
         NavAction.OnHome -> DestinationInfo(NavDestination.ArticleList, PopBehavior.PopToRoot)
-        is NavAction.OnArticleSelect -> DestinationInfo(NavDestination.ArticleDetail(navAction.articleId), PopBehavior.PopIfSelf)
+        is NavAction.OnArticleSelect -> DestinationInfo(
+            NavDestination.ArticleDetail(navAction.articleId, navAction.title),
+            PopBehavior.PopIfSelf
+        )
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
@@ -18,6 +19,7 @@ import com.example.nytviewer.navigation.PopBehavior
 import com.example.nytviewer.ui.common.NavBar
 import com.example.nytviewer.utils.asLifecycleAwareState
 import com.kiwi.navigationcompose.typed.composable
+import com.kiwi.navigationcompose.typed.createRoutePattern
 import com.kiwi.navigationcompose.typed.navigate
 import kotlinx.serialization.ExperimentalSerializationApi
 
@@ -31,7 +33,7 @@ fun AppNavHost(
     val lifecycleOwner = LocalLifecycleOwner.current
     val navigatorState by navigator.navActions.asLifecycleAwareState(
         lifecycleOwner = lifecycleOwner,
-        initialState = NavDestination.ArticleList
+        initialState = null
     )
 
     /**
@@ -84,11 +86,16 @@ fun AppNavHost(
         navigator.handle(NavAction.OnBack)
     }
 
-    NavHost(navController = navController, startDestination = NavDestination.ArticleList.route) {
+    NavHost(navController = navController, startDestination = createRoutePattern<NavDestination.ArticleList>()) {
         composable<NavDestination.ArticleList> {
+            NavBar(title = "ArticleList") {
+
+            }
         }
         composable<NavDestination.ArticleDetail> {
+            NavBar(title = title) {
 
+            }
         }
     }
 }

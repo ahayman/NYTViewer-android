@@ -1,8 +1,11 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
-    id("com.google.devtools.ksp")
+//    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.10"
+//    id("com.google.devtools.ksp")
+    kotlin("kapt") version "1.9.0"
+    id("com.google.dagger.hilt.android")
+    id("kotlinx-serialization")
 }
 android {
     namespace = "com.example.nytviewer"
@@ -39,6 +42,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -65,10 +69,16 @@ dependencies {
     implementation(libs.androidx.navigation.common.ktx)
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
-    implementation("com.google.dagger:hilt-android:2.48.1")
+    implementation("com.google.dagger:hilt-android:2.51")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    kapt("com.google.dagger:hilt-android-compiler:2.51")
 
-    ksp("com.google.dagger:hilt-android-compiler:2.48.1")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.moshi:moshi:1.15.1")
+    implementation("com.squareup.moshi:moshi-adapters:1.15.1")
+    implementation("com.squareup.retrofit2:converter-moshi:2.4.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
+    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.1")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
