@@ -1,7 +1,10 @@
 package com.example.nytviewer.ui.articleList.models
 
-import java.net.URL
-
+/**
+ * All the data the UI needs to display an article brief as a list item.
+ * The main difference between this and the ArticleBrief, is the date has
+ * been formatted as a human readable string.
+ */
 data class BriefDisplayData(
     val uri: String,
     val dateDisplay: String,

@@ -2,6 +2,8 @@ package com.example.nytviewer.repos.articles
 
 import com.example.nytviewer.repos.articles.models.ArticleBrief
 import com.example.nytviewer.repos.articles.models.ArticleDetail
+import com.example.nytviewer.repos.articles.models.ArticleRepoActions
+import com.example.nytviewer.repos.articles.models.ArticleRepoState
 import com.example.nytviewer.repos.articles.models.ArticleSection
 import com.example.nytviewer.repos.articles.models.ListDef
 import com.example.nytviewer.services.transport.TransportServiceInterface
@@ -18,16 +20,29 @@ import kotlinx.coroutines.launch
 import java.net.URL
 import javax.inject.Inject
 
+/**
+ * Convenience function that searches through an article to find the
+ * smallest image it can find (probably a thumbnail).
+ */
 private fun smallImageIn(article: Article): String? =
     article.media?.firstOrNull { it.type == "image" }?.let { media ->
         media.metadata.minByOrNull { it.height * it.width }?.url
     } ?: article.multiMedia?.filter { it.type == "image" }?.minByOrNull { it.width * it.height }?.url
 
+/**
+ * Convenience function that searches through an article to find the
+ * largest image it can find.
+ */
 private fun largeImageIn(article: Article): String? =
     article.media?.firstOrNull { it.type == "image" }?.let { media ->
         media.metadata.maxByOrNull { it.height * it.width }?.url
     } ?: article.multiMedia?.filter { it.type == "image" }?.maxByOrNull { it.width * it.height }?.url
 
+/**
+ * An extension to [List<Article>] data retrieved from the Transport service,
+ * that maps it to a [List<ArticleBrief>] to be returned by the repo.
+ * This is mostly here to made the the conversion cleaner in the repo code.
+ */
 fun List<Article>.briefs(): List<ArticleBrief> = this.map {
     ArticleBrief(
         uri = it.uri,
@@ -38,15 +53,25 @@ fun List<Article>.briefs(): List<ArticleBrief> = this.map {
     )
 }
 
+/**
+ * Concrete implementation of the ArticlesRepoInterface.
+ * Requires a TransportService to retrieve data from the apis.
+ */
 class ArticlesRepo @Inject constructor(
     private val transport: TransportServiceInterface,
 ) : ArticlesRepoInterface {
-    private val mainScope = CoroutineScope(Dispatchers.Main)
+    /// When possible, api and data processing will occur in an IO scope.
     private val ioScope = CoroutineScope(Dispatchers.IO)
+    /// A state data will be returned/emitted in the main scope.
+    private val mainScope = CoroutineScope(Dispatchers.Main)
+    /// A cache of articles for each ListDef.id, so we don't unnecessarily hit the api.
     private val articleCache: MutableMap<String, CachedItem<List<Article>>> = mutableMapOf()
+    /// Maps to Articles via the [Article.uri] property.
     private val articleMap: MutableMap<String, Article> = mutableMapOf()
 
+    /// Required Error state for the State Reducer. Generally, it's used for API errors.
     override val error = MutableStateFlow<String?>(null)
+    /// Required State for the reducer. This is the main state returned by the repo.
     override val state = MutableStateFlow(
         ArticleRepoState(
             sections = listOf(),
@@ -55,9 +80,10 @@ class ArticlesRepo @Inject constructor(
         )
     )
 
+    // When the repo starts up, preload the articles and section list
     init {
-        // When the repo starts up, preload the articles
-        ioScope.launch { execute(ArticleRepoActions.RefreshArticles) }
+        submit(ArticleRepoActions.RefreshArticles)
+        submit(ArticleRepoActions.RefreshSections)
     }
 
     override fun submit(action: ArticleRepoActions) {
@@ -87,9 +113,15 @@ class ArticlesRepo @Inject constructor(
             )
         }
 
-    private suspend fun applyArticlesToMap(articles: List<Article>) =
+    /**
+     * ============= Private functions =============
+     */
+
+    /// Simple function to add articles the article map.
+    private fun applyArticlesToMap(articles: List<Article>) =
         articles.forEach { articleMap[it.uri] = it }
 
+    /// Will retrieve articles from the Transport Service and return them
     private suspend fun getRefreshedArticles(listDef: ListDef): TransportResponse<List<Article>> =
         when (listDef) {
             ListDef.PopularEmailed -> transport.getPopularEmailed(PeriodRequest.Month)
@@ -98,6 +130,10 @@ class ArticlesRepo @Inject constructor(
             is ListDef.Section -> transport.getSectionArticles(listDef.section.id, 100)
         }
 
+    /**
+     * This retrieves current article for the given list, replaces the cache with them, and
+     * updates the state with the new articles.
+     */
     private suspend fun refreshCurrentArticles(listDef: ListDef) {
         when(val response = getRefreshedArticles(state.value.listDef)) {
             is TransportResponse.Success -> {
@@ -116,6 +152,11 @@ class ArticlesRepo @Inject constructor(
         }
     }
 
+    /**
+     * Loads additional articles, updating the cache and state.
+     * This only works for section articles. Popular articles have
+     * no api to load additional data.
+     */
     private suspend fun loadMoreArticles() {
         val listDef = state.value.listDef
         val articleResponse = when (listDef) {
@@ -151,6 +192,11 @@ class ArticlesRepo @Inject constructor(
         }
     }
 
+    /**
+     * Selecting a list will update the cache if that list has expired,
+     * and update the state with the new list's articles along with the
+     * requested listDef.
+     */
     private suspend fun selectList(listDef: ListDef) {
         val cache = articleCache[listDef.id]
         if (cache != null && !cache.isExpired) {
@@ -188,6 +234,10 @@ class ArticlesRepo @Inject constructor(
 
     }
 
+    /**
+     * Refreshes the section list. This is normally not needed, as Sections
+     * don't change very often.
+     */
     private suspend fun refreshSectionList() {
         when (val response = transport.getSectionList()) {
             is TransportResponse.Success -> {

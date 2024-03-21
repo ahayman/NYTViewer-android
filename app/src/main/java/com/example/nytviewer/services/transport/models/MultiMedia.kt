@@ -3,6 +3,10 @@ package com.example.nytviewer.services.transport.models
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
+/**
+ * This is a more generic kind of media object. It contains the type along with
+ * other relevant data, and a URL pointing to the media source.
+ */
 @JsonClass(generateAdapter = true)
 data class MultiMedia(
     @Json(name = "url")

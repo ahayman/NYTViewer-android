@@ -7,7 +7,11 @@ import com.example.nytviewer.services.transport.models.Section
 import com.example.nytviewer.services.transport.utils.TransportResponse
 import com.example.nytviewer.services.transport.utils.getAPIResults
 
-class TransportService(private  val api: NYTimesAPI): TransportServiceInterface {
+/**
+ * A Concrete implementation of the TransportServiceInterface.
+ * Requires a retrofit NYTimes API to make the required calls.
+ */
+class TransportService(private val api: NYTimesAPI): TransportServiceInterface {
     override suspend fun getSectionList(): TransportResponse<List<Section>> {
         return try {
             api.getSectionList().getAPIResults()

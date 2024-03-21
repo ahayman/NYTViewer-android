@@ -8,14 +8,14 @@ package com.example.nytviewer.services.transport.utils
 sealed class TransportResponse<out T> {
     /**
      * Represents a successful network operation.
-     * @param T The type of the data returned.
      * @param data The data returned from the network operation.
      */
     data class Success<out T>(val data: T) : TransportResponse<T>()
 
     /**
      * Represents a failed network operation.
-     * @param error The error returned from the network operation, null by default.
+     * @param code If the network returned an HTTP code, it should be provided here.
+     * @param message The error returned from the network operation
      */
     data class Error(val code: Int? = null, val message: String) : TransportResponse<Nothing>() {
         val errorMessage: String

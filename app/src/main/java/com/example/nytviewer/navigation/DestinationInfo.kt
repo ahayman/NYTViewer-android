@@ -1,7 +1,10 @@
 package com.example.nytviewer.navigation
 import androidx.navigation.NamedNavArgument
 
-
+/**
+ * Defines the navigation behavior when routing to a new screen. It allows for popping
+ * or removing one or more screens before the new screen is loaded.
+ */
 sealed class PopBehavior {
     // [Default] Do not pop anything with the stack.
     data object None : PopBehavior()

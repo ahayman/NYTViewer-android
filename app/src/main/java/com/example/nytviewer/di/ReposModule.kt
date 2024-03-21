@@ -9,6 +9,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Dependency Injection of all Repositories available in the app.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 class ReposModule {

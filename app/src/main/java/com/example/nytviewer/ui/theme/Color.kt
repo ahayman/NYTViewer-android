@@ -67,7 +67,12 @@ sealed class ColorTheme {
     }
 
     @Composable
-    fun isDarkTheme(): Boolean = isSystemInDarkTheme()
+    fun isDarkTheme(): Boolean = when(this) {
+        System -> isSystemInDarkTheme()
+        is Custom -> isSystemInDarkTheme()
+        Dark -> true
+        Light -> false
+    }
 }
 
 /**
@@ -102,7 +107,7 @@ private val LightTheme = lightColorScheme(
     inversePrimary = Color(0xFFA5C8FF),
     surfaceTint = Color(0xFF003c71),
     outlineVariant = Color(0xFFC3C6CF),
-    scrim = Color(0xFF000000),
+    scrim = Color(0x22000000),
     surface = Color(0xFFFFFFFF),
     onSurface = Color(0xFF1A1C1E),
     surfaceVariant = Color(0xFFE0E2EB),

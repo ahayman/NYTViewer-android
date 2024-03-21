@@ -15,14 +15,24 @@ import com.example.nytviewer.navigation.NavDestination
 import com.example.nytviewer.navigation.NavGraphInterface
 import com.example.nytviewer.navigation.Navigator
 import com.example.nytviewer.navigation.PopBehavior
+import com.example.nytviewer.ui.articleDetail.ArticleDetailView
 import com.example.nytviewer.ui.articleList.ArticleListView
-import com.example.nytviewer.ui.common.NavBar
 import com.example.nytviewer.utils.asLifecycleAwareState
 import com.kiwi.navigationcompose.typed.composable
 import com.kiwi.navigationcompose.typed.createRoutePattern
 import com.kiwi.navigationcompose.typed.navigate
 import kotlinx.serialization.ExperimentalSerializationApi
 
+/**
+ * AppNavHost is responsible for hosting Jetpack Compose Navigation's NavHost, which is used
+ * by it to perform the navigation between screens.
+ *
+ * Should be placed in the main activity of the app.
+ *
+ * Requires both a Navigator and a NavGraphInterface. Will subscribe to the Navigator's actions,
+ * use the NavGraph to determine which destination the action should route to, and then calculate
+ * the nav options used when navigating.
+ */
 @OptIn(ExperimentalSerializationApi::class)
 @Composable
 fun AppNavHost(
@@ -86,16 +96,16 @@ fun AppNavHost(
         navigator.handle(NavAction.OnBack)
     }
 
-    NavHost(navController = navController, startDestination = createRoutePattern<NavDestination.ArticleList>()) {
+    /**
+     * Primary Hos for Navigation.
+     * All navigable destinations (except Back) should have a corresponding screen defined here.
+     */
+    NavHost(navController = navController, startDestination = NavDestination.ArticleList.route) {
         composable<NavDestination.ArticleList> {
-            NavBar(title = "ArticleList") {
-                ArticleListView()
-            }
+            ArticleListView()
         }
         composable<NavDestination.ArticleDetail> {
-            NavBar(title = title) {
-
-            }
+            ArticleDetailView()
         }
     }
 }

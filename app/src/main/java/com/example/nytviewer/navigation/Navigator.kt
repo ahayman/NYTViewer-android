@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
  * The navActions property is a [StateFlow] that emits the current navigation action.
  * The `handle` function takes a [NavAction] and pushes it into the state flow.
  * The AppHost should subscribe to the nav actions and use the NavGraph to route the
- * app to the proper destination when a new nav action is presented.
+ * app to the proper destination when a new action is presented.
  */
 interface Navigator {
     val navActions: SharedFlow<NavAction?>
@@ -20,10 +20,11 @@ interface Navigator {
 
 /**
  * An app specific implementation of [Navigator]. This implementation receives an action and emits
- * the result to the [navActions] [StateFlow]. The feature specific ViewModels can use this
- * navigator to request specific actions by calling [handle].The applications [AppNavHost]
+ * the result to the [navActions] [StateFlow]. ViewModels can use this
+ * navigator to request specific actions by calling [handle].The application's [AppHost]
  * observes this flow and performs the corresponding navigation. In this way, views and viewmodels
- * do not need a reference to the [NavController] or the [NavHostFragment].
+ * do not need a reference to the [NavController] or the [NavHostFragment], providing a cleaner
+ * separation of concerns.
  */
 class AppNavigator : Navigator {
 

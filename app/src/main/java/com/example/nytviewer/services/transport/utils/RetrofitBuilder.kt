@@ -62,6 +62,9 @@ class RetrofitBuilder(private val provider: TransportKeysProvider, private val m
         return getRetrofit().create(NYTimesAPI::class.java)
     }
 
+    /**
+     * Creates and returns the full NYTimes API.
+     */
     val apiService: NYTimesAPI by lazy {
         createAPIService()
     }

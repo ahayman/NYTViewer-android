@@ -9,6 +9,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Dependency Injection for all Services available within the app.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 class ServicesModule {

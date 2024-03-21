@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material)
+    implementation(libs.androidx.material.icons)
 
     implementation(libs.androidx.navigation.common.ktx)
     implementation("com.kiwi.navigation-compose.typed:core:0.10.0")

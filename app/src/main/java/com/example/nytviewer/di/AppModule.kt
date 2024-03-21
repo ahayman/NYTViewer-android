@@ -17,6 +17,10 @@ import dagger.hilt.components.SingletonComponent
 import java.util.Date
 import javax.inject.Singleton
 
+/**
+ * Main Dependency Injection for a variety of components that need to be available throughout
+ * the app.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {

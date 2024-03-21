@@ -1,13 +1,17 @@
 package com.example.nytviewer.navigation
 
+import android.content.Intent
+import android.net.Uri
+
 /**
  * The interface necessary for a Navigation Graph to function properly.
- * Currently only includes a single method used to properly convert NavActions to the
+ * Currently only includes a single method used to convert NavActions to the
  * destination info needed for the action.
  */
 interface NavGraphInterface {
     /**
      * For a given [NavAction], this method should return the proper [DestinationInfo].
+     * Can return `null`. If it does, no navigation will occur _within_ the app.
      */
     fun destinationInfoForAction(navAction: NavAction): DestinationInfo?
 }
@@ -19,12 +23,17 @@ interface NavGraphInterface {
 class NavGraph : NavGraphInterface {
     override fun destinationInfoForAction(
         navAction: NavAction,
-    ): DestinationInfo = when (navAction) {
+    ): DestinationInfo? = when (navAction) {
         NavAction.OnBack -> DestinationInfo(NavDestination.Back)
         NavAction.OnHome -> DestinationInfo(NavDestination.ArticleList, PopBehavior.PopToRoot)
         is NavAction.OnArticleSelect -> DestinationInfo(
             NavDestination.ArticleDetail(navAction.articleId, navAction.title),
             PopBehavior.PopIfSelf
         )
+        is NavAction.OnUrlSelect -> {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(navAction.url.toString()))
+            navAction.context.startActivity(intent)
+            null
+        }
     }
 }

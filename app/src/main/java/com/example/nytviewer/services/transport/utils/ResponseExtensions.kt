@@ -5,7 +5,7 @@ import retrofit2.Response
 
 /**
  * This will return the full network response as the data in a TransportResponse object if the call was successful
- * (returning a normal HTTP success status code, no matter the server's response body).
+ * It simplifies the handling of all API calls by checking its success and extracting out the data needed from it.
  * */
 fun <ResponseType : APIResponse<DataType>, DataType> Response<ResponseType>.getAPIResults(): TransportResponse<List<DataType>> {
     val body = this.body()
