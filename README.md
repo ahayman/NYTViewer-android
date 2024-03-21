@@ -6,6 +6,10 @@ The NY Times viewer is a "simple" app of only two screens:
 
 While the app is simple, it is had a full expandable architecture designed to be maintainable.
 
+### Unit Tests
+
+Because of the time constraints of the project, Unit Tests were not included (yet). Once they're added, this section will be updated.
+
 ### Core Architecture
 
 #### Navigation
@@ -51,3 +55,20 @@ All Injectable classes (again, excepting View Models) should be defined by their
 #### Dependency Injection
 
 Hilt is used for dependency injection. All Repositories, Services, and View Models should rely on Hilt to inject the necessary dependencies. Again, those dependencies should be defined by _interfaces_.
+
+
+### App Functionality
+
+At present, the app has only two screens.
+
+#### Article List Screen
+
+This is the "home" screen, and displays a list of articles. By default, it will show Popular View Articles.  A slide-over navigation menu will allow the user to select from other Popular articles, or they can select from a list sections downloaded from the api. Tapping on a menu item will load in the new articles.
+
+A theme switcher is located on the top right. It will toggle the UI between light and dark themes. By default, the theme will use a theme appropriate to the phone's dark/light mode.
+
+When the user taps on an article, they're brought to a detail view.
+
+#### Article Detail Screen
+
+The detail screen will allow the user to see additional data for the article they selected. This mostly includes an abstract of the article. The article itself is not shown due to limitations in the API (NY Times wants you to pay for that privilege). So instead, a "Read more..." button is provided that will take the sure to the article in a browser. 
