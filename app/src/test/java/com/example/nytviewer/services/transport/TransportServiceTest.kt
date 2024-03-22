@@ -2,6 +2,7 @@ package com.example.nytviewer.services.transport
 
 import com.example.nytviewer.services.transport.apis.NYTimesAPI
 import com.example.nytviewer.services.transport.mocks.createArticle
+import com.example.nytviewer.services.transport.mocks.createSection
 import com.example.nytviewer.services.transport.models.APIResponse
 import com.example.nytviewer.services.transport.models.Article
 import com.example.nytviewer.services.transport.models.PeriodRequest
@@ -44,7 +45,7 @@ class TransportServiceTests {
 
     @Test
     fun `test getSectionList success`() = runBlocking {
-        val sections = listOf(Section("1", "1"), Section("2", "2"))
+        val sections = listOf(createSection(1), createSection(2))
         val apiResponse: Response<APIResponse<Section>> = Response.success(
             APIResponse(
                 status = "success",

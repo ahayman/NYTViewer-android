@@ -13,6 +13,7 @@ I push for Unit Tests as much as possible with my clients, and when I estimate t
 This was a time-constrained project, and I was asked to complete the project first without Unit Tests to ensure I was finished within the constraints given to me. I've included the following Unit Test suites to exemplify my approach to Unit Testing.
  - `ArticleListVM`
  - `TransportService`
+ - `ArticlesRepo`
 
 
 ### Core Architecture
