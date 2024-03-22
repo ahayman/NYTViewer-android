@@ -8,7 +8,7 @@ While the app is simple, it is had a full expandable architecture designed to be
 
 ### Unit Tests
 
-I push for Unit Tests as much as possible with my clients, and when I estimate tasks, I will default include Unit Tests as part of my estimate. My goal is roughly 80% coverage for a front end project, which should include everything except Views and pure Dependency Injection code. I am sensitive to client needs, however, and will forego Unit Tests when asked. 
+I push for Unit Tests as much as possible with my clients, and when I estimate tasks, I will default include Unit Tests as part of my estimate. My goal is roughly 80% coverage for a front end project, which should include everything except Views and pure Dependency Injection code.
 
 This was a time-constrained project, and I was asked to complete the project first without Unit Tests to ensure I was finished within the constraints given to me. I've included a single suite of Unit Tests on the `ArticleListVM` to exemplify my approach to Unit Testing.
 
