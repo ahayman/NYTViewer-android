@@ -8,7 +8,11 @@ While the app is simple, it is had a full expandable architecture designed to be
 
 ### Unit Tests
 
-Because of the time constraints of the project, Unit Tests were not included (yet). Once they're added, this section will be updated.
+I push for Unit Tests as much as possible with my clients, and when I estimate tasks, I will default include Unit Tests as part of my estimate. My goal is roughly 80% coverage for a front end project, which should include everything except Views and pure Dependency Injection code. 
+
+I am sensitive to client needs, however, and will forego Unit Tests when asked. Many clients will request feature development within a time frame that does not allow for Unit Tests. When this happens, I make clear the trade-offs they're asking of me.
+
+This was a time-constrained project, and I was asked to complete the project first without Unit Tests to ensure I was finished within the constraints given to me. I've included a single suite of Unit Tests on the `ArticleListVM` to exemplify my approach to Unit Testing.
 
 ### Core Architecture
 
@@ -71,4 +75,4 @@ When the user taps on an article, they're brought to a detail view.
 
 #### Article Detail Screen
 
-The detail screen will allow the user to see additional data for the article they selected. This mostly includes an abstract of the article. The article itself is not shown due to limitations in the API (NY Times wants you to pay for that privilege). So instead, a "Read more..." button is provided that will take the sure to the article in a browser. 
+The detail screen will allow the user to see additional data for the article they selected. This mostly includes an abstract of the article. The article itself is not shown due to limitations in the API (NY Times wants you to pay for that privilege). So instead, a "Read more..." button is provided that will take the user to the article in a browser. 

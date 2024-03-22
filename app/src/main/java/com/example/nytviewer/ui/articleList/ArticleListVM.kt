@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
 import javax.inject.Inject
@@ -98,7 +99,7 @@ class ArticleListVM @Inject constructor(
     override suspend fun execute(action: ArticleListVMActions) {
         if (_refreshing.value) return
         if (action.isRefreshable) {
-            _refreshing.value = true
+            _refreshing.update { true }
         }
         when (action) {
             ArticleListVMActions.LoadMoreArticles -> articlesRepo.execute(ArticleRepoActions.LoadMoreArticles)
@@ -109,7 +110,7 @@ class ArticleListVM @Inject constructor(
             is ArticleListVMActions.SelectList -> articlesRepo.execute(ArticleRepoActions.SelectList(action.listDef))
             is ArticleListVMActions.SelectBrief -> navigator.handle(NavAction.OnArticleSelect(action.data.uri, action.data.title))
         }
-        _refreshing.value = false
+        _refreshing.update { false }
     }
 
     override fun submit(action: ArticleListVMActions) {

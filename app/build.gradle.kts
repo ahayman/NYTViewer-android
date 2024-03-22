@@ -70,6 +70,7 @@ dependencies {
     implementation("com.kiwi.navigation-compose.typed:core:0.10.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation(libs.kotlinx.serialization.core)
+
     implementation("io.coil-kt:coil-compose:2.6.0")
 
     implementation("com.google.dagger:hilt-android:2.51")
@@ -83,6 +84,11 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.15.1")
 
+    testImplementation("io.mockk:mockk:1.13.10")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.12.0")
+    testImplementation("org.mockito:mockito-core:5.11.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
